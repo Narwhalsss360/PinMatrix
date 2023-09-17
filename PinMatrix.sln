@@ -21,6 +21,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "repository", "repository", 
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BitArray", "dependencies\BitArray\src\BitArray\BitArray.vcxitems", "{E4E435A1-FC08-493B-9B1C-F18017A462D9}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{EFDD929F-10B2-4B09-AD07-9B90F4AA0B9A}"
+	ProjectSection(SolutionItems) = preProject
+		examples\ButtonMatrix.cpp = examples\ButtonMatrix.cpp
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{6F7F6AFE-170C-47E5-906C-0F88BA4F5EBF}"
+	ProjectSection(SolutionItems) = preProject
+		lib\keywords.txt = lib\keywords.txt
+		lib\library.properties = lib\library.properties
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
