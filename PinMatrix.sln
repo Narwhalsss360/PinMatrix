@@ -62,7 +62,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		src\PinMatrix\PinMatrix.vcxitems*{3b0815de-ad3d-45c5-8a15-596b46799e66}*SharedItemsImports = 9
-		dependencies\BitArray\src\BitArray\BitArray.vcxitems*{bfdc21ab-116d-4f29-a507-cddb5f9bc457}*SharedItemsImports = 4
 		src\PinMatrix\PinMatrix.vcxitems*{bfdc21ab-116d-4f29-a507-cddb5f9bc457}*SharedItemsImports = 4
 		dependencies\BitArray\src\BitArray\BitArray.vcxitems*{e4e435a1-fc08-493b-9b1c-f18017a462d9}*SharedItemsImports = 9
 	EndGlobalSection

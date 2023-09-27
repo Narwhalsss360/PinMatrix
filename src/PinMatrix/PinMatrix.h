@@ -3,6 +3,7 @@
 
 #include <BitArray.h>
 #include <SketchBoundLibrary.h>
+#include <NEvents.h>
 
 typedef void (*PinMatrixUpdatedEventHandler) (uint8_t, uint8_t, bool);
 
@@ -11,7 +12,7 @@ class PinMatrix
 {
 public:
 	PinMatrix(const uint8_t(&rowPins)[row_count], const uint8_t(&columnPins)[column_count], const time_t debounce)
-		: updateHandler(nullptr), lastRead(0), debounce(debounce), rowPins(rowPins), columnPins(columnPins), read_callable(this, &PinMatrix::read), stopRecusion(false)
+		: updateHandler(Event<PinMatrix, byte, byte, bool>()), lastRead(0), debounce(debounce), rowPins(rowPins), columnPins(columnPins), stopRecusion(false)
 	{
 		for (uint8_t iRow = 0; iRow < row_count; iRow++)
 		{
@@ -24,7 +25,7 @@ public:
 			pinMode(columnPins[iColumn], INPUT_PULLUP);
 		}
 
-		addInternalSketchBinding(bind_loop, &read_callable);
+		addSketchBinding(bind_loop, &invokable_get(this, &PinMatrix::read));
 	}
 
 	void read()
@@ -43,9 +44,9 @@ public:
 				if (result != matrixStates[iRow].get(iColumn))
 				{
 					matrixStates[iRow].set(iColumn, result);
+
 					stopRecusion = true;
-					if (updateHandler)
-						updateHandler(iRow, iColumn, result);
+					updateHandler(iRow, iColumn, result);
 					stopRecusion = false;
 				}
 			}
@@ -57,7 +58,7 @@ public:
 
 	constexpr uint8_t columnCount() { return column_count; }
 
-	PinMatrixUpdatedEventHandler updateHandler;
+	Event<PinMatrix, byte, byte, bool> updateHandler;
 
 private:
 	BitArray<column_count> matrixStates[row_count];
@@ -65,7 +66,6 @@ private:
 	time_t debounce;
 	const uint8_t(&rowPins)[row_count];
 	const uint8_t(&columnPins)[column_count];
-	VoidMemberVoid<PinMatrix> read_callable;
 	bool stopRecusion;
 };
 
