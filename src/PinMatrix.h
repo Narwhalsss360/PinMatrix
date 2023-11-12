@@ -11,6 +11,10 @@ template <uint8_t row_count, uint8_t column_count>
 class PinMatrix
 {
 public:
+	/// @brief Class for reading and iterpreting matrices.
+	/// @param rowPins array of pins of the rows
+	/// @param columnPins array of pins of the columns
+	/// @param debounce button debounce time
 	PinMatrix(const uint8_t(&rowPins)[row_count], const uint8_t(&columnPins)[column_count], const time_t debounce)
 		: updateHandler(Event<PinMatrix, byte, byte, bool>()), lastRead(0), debounce(debounce), rowPins(rowPins), columnPins(columnPins), stopRecusion(false)
 	{
@@ -28,6 +32,7 @@ public:
 		addSketchBinding(bind_loop, &invokable_get(this, &PinMatrix::read));
 	}
 
+	/// @brief Reads state of matrix.
 	void read()
 	{
 		if (stopRecusion)
@@ -54,10 +59,15 @@ public:
 		}
 	}
 
+	/// @brief Get how many rows.
+	/// @return `uint8_t` row count
 	constexpr uint8_t rowCount() { return row_count; }
 
+	/// @brief Get how many columns
+	/// @return `uint8_t` column count
 	constexpr uint8_t columnCount() { return column_count; }
 
+	/// @brief Event invoked when a button on the matrix is either pushed or released.
 	Event<PinMatrix, byte, byte, bool> updateHandler;
 
 private:
@@ -69,6 +79,15 @@ private:
 	bool stopRecusion;
 };
 
+/// @brief Create a `PinMatrix` object according to arguments. (wrapper function).
+/// @tparam row_uint8_t row array type
+/// @tparam column_uint8_t column array type
+/// @tparam row_count row count
+/// @tparam column_count column count
+/// @param rowPins row pins array
+/// @param columnPins column pins array
+/// @param debounce debounce time
+/// @return `PinMatrix` object
 template <typename row_uint8_t, typename column_uint8_t, uint8_t row_count = sizeof(row_uint8_t), uint8_t column_count = sizeof(column_uint8_t)>
 PinMatrix<row_count, column_count> createMatrix(const row_uint8_t(&rowPins)[row_count], const column_uint8_t(&columnPins)[column_count], time_t debounce)
 {
