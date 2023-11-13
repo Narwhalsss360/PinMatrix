@@ -7,10 +7,11 @@
 
 #include <PinMatrix.h>
 
-//My row and column pins. Pin arrays must not be pointers and must be const
+//My row and column pins.
 const byte rowCount = 2;
 const byte columnCount = 3;
 
+//Pin arrays must not be pointers and must be const
 const byte rowPins[] = { 2, 3 };
 const byte columnPins[] = { 4, 5, 6 };
 
@@ -25,10 +26,12 @@ auto buttonMatrix = createMatrix(rowPins, columnPins, debounce);
 
 void setup() {
 	Serial.begin(115200);
-	buttonMatrix.updateHandler = buttonUpdated;
+	buttonMatrix.updateHandler += buttonUpdated;
 }
 
 void loop() {
+	//Must be called if SketchBinder.h is not included correctly.
+	//buttonMatrix.read();
 }
 
 void buttonUpdated(byte row, byte column, bool state) {
