@@ -5,8 +5,6 @@
 #include <SketchBoundLibrary.h>
 #include <NEvents.h>
 
-typedef void (*PinMatrixUpdatedEventHandler) (uint8_t, uint8_t, bool);
-
 template <uint8_t row_count, uint8_t column_count>
 class PinMatrix
 {
@@ -28,10 +26,13 @@ public:
 		addSketchBinding(bind_loop, &invokable_get(this, &PinMatrix::read));
 	}
 
+	/// @brief Read the matrix
 	void read()
 	{
+		//Stop recursion is a safety to make sure the updateHandler doesnt call read again.
 		if (stopRecusion)
 			return;
+
 		if (!intervalElapsed(lastRead, debounce))
 			return;
 
