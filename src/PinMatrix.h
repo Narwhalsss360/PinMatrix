@@ -2,8 +2,12 @@
 #define PinMatrix_h
 
 #include <BitArray.h>
-#include <SketchBoundLibrary.h>
 #include <NEvents.h>
+#include <TimedInterval.h>
+#if __has_include(<SketchBoundLibrary.h>)
+#include <SketchBoundLibrary.h>
+#define PinMatrix_Bindable
+#endif
 
 typedef void (*PinMatrixUpdatedEventHandler) (uint8_t, uint8_t, bool);
 
@@ -15,7 +19,7 @@ public:
 	/// @param rowPins array of pins of the rows
 	/// @param columnPins array of pins of the columns
 	/// @param debounce button debounce time
-	PinMatrix(const uint8_t(&rowPins)[row_count], const uint8_t(&columnPins)[column_count], const time_t debounce)
+	PinMatrix(const uint8_t(&rowPins)[row_count], const uint8_t(&columnPins)[column_count], const ntime_t debounce)
 		: updateHandler(Event<PinMatrix, byte, byte, bool>()), lastRead(0), debounce(debounce), rowPins(rowPins), columnPins(columnPins), stopRecusion(false)
 	{
 		for (uint8_t iRow = 0; iRow < row_count; iRow++)
@@ -29,7 +33,9 @@ public:
 			pinMode(columnPins[iColumn], INPUT_PULLUP);
 		}
 
-		addSketchBinding(bind_loop, &invokable_get(this, &PinMatrix::read));
+#ifdef PinMatrix_Bindable
+		addSketchBinding(bind_loop, &invokable_get(this, &PinMatrix<row_count, column_count>::read));
+#endif
 	}
 
 	/// @brief Reads state of matrix.
@@ -72,8 +78,8 @@ public:
 
 private:
 	BitArray<column_count> matrixStates[row_count];
-	time_t lastRead;
-	time_t debounce;
+	ntime_t lastRead;
+	ntime_t debounce;
 	const uint8_t(&rowPins)[row_count];
 	const uint8_t(&columnPins)[column_count];
 	bool stopRecusion;
@@ -89,7 +95,7 @@ private:
 /// @param debounce debounce time
 /// @return `PinMatrix` object
 template <typename row_uint8_t, typename column_uint8_t, uint8_t row_count = sizeof(row_uint8_t), uint8_t column_count = sizeof(column_uint8_t)>
-PinMatrix<row_count, column_count> createMatrix(const row_uint8_t(&rowPins)[row_count], const column_uint8_t(&columnPins)[column_count], time_t debounce)
+PinMatrix<row_count, column_count> createMatrix(const row_uint8_t(&rowPins)[row_count], const column_uint8_t(&columnPins)[column_count], ntime_t debounce)
 {
 	return PinMatrix<row_count, column_count>(rowPins, columnPins, debounce);
 }
