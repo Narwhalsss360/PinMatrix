@@ -20,7 +20,14 @@ public:
 	/// @param columnPins array of pins of the columns
 	/// @param debounce button debounce time
 	PinMatrix(const uint8_t(&rowPins)[row_count], const uint8_t(&columnPins)[column_count], const ntime_t debounce)
-		: updateHandler(Event<PinMatrix, byte, byte, bool>()), lastRead(0), debounce(debounce), rowPins(rowPins), columnPins(columnPins), stopRecusion(false)
+		:
+            updateHandler(Event<PinMatrix, byte, byte, bool>()),
+            lastRead(0),
+            debounce(debounce),
+            rowPins(rowPins),
+            columnPins(columnPins),
+            stopRecusion(false),
+            readMethod(Method<PinMatrix<row_count, column_count>, void>(this, &PinMatrix<row_count, column_count>::read))
 	{
 		for (uint8_t iRow = 0; iRow < row_count; iRow++)
 		{
@@ -34,7 +41,7 @@ public:
 		}
 
 #ifdef PinMatrix_Bindable
-		addSketchBinding(bind_loop, &invokable_get(this, &PinMatrix<row_count, column_count>::read));
+		addSketchBinding(bind_loop, &readMethod);
 #endif
 	}
 
@@ -76,6 +83,8 @@ public:
 	/// @brief Event invoked when a button on the matrix is either pushed or released.
 	Event<PinMatrix, byte, byte, bool> updateHandler;
 
+
+
 private:
 	BitArray<column_count> matrixStates[row_count];
 	ntime_t lastRead;
@@ -83,6 +92,7 @@ private:
 	const uint8_t(&rowPins)[row_count];
 	const uint8_t(&columnPins)[column_count];
 	bool stopRecusion;
+    const Method<PinMatrix<row_count, column_count>, void> readMethod;
 };
 
 /// @brief Create a `PinMatrix` object according to arguments. (wrapper function).
