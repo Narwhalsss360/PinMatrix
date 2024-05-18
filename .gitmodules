@@ -1,3 +1,0 @@
-[submodule "dependencies/BitArray"]
-	path = dependencies/BitArray
-	url = git@github.com:Narwhalsss360/BitArray.git
